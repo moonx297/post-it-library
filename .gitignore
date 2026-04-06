@@ -2,3 +2,9 @@ node_modules
 dist
 .DS_Store
 *.local
+
+# 비밀·토큰 (실수로 커밋 방지)
+.env
+.env.*
+!.env.example
+.npmrc

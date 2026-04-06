@@ -5,6 +5,7 @@
   "scripts": {
     "build": "npm run build --workspace=post-it-library",
     "dev": "npm run dev --workspace=demo",
-    "preview": "npm run preview --workspace=demo"
+    "preview": "npm run preview --workspace=demo",
+    "publish:lib": "npm publish -w post-it-library --access public"
   }
 }

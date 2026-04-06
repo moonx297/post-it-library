@@ -20,27 +20,24 @@
 .post-it__head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 0.5rem;
-  padding: 0.35rem 0.5rem 0.35rem 0.65rem;
+  padding: 0.35rem 0.45rem;
   background: rgba(0, 0, 0, 0.06);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   user-select: none;
   flex-shrink: 0;
 }
 
-.post-it__head-title {
-  font-size: 0.78rem;
-  font-weight: 600;
-  opacity: 0.85;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.post-it__head-drag {
+  flex: 1;
+  min-height: 1.25rem;
+  min-width: 0;
 }
 
 .post-it__head-actions {
   display: flex;
   gap: 0.25rem;
+  flex-shrink: 0;
 }
 
 .post-it__icon-btn {
@@ -50,20 +47,15 @@
   width: 28px;
   height: 28px;
   cursor: pointer;
-  font-size: 0.85rem;
-  line-height: 1;
+  color: #1a1a1a;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
 }
 
 .post-it__icon-btn:hover {
   background: rgba(255, 255, 255, 0.55);
-}
-
-.post-it__fold {
-  font-size: 0.72rem;
-  font-weight: 700;
 }
 
 .post-it__body {
@@ -115,8 +107,16 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.6rem;
+  gap: 0.5rem;
   pointer-events: none;
+}
+
+.post-it-fab__row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: auto;
 }
 
 .post-it-fab button {
@@ -134,25 +134,153 @@
   line-height: 1;
   cursor: pointer;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
 }
 
 .post-it-fab__primary:hover {
   background: #2ea043;
 }
 
-.post-it-fab__secondary {
-  border: none;
-  border-radius: 999px;
-  padding: 0.5rem 0.9rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
+.post-it-fab__tray {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid #30363d;
   background: #21262d;
   color: #e6edf3;
-  border: 1px solid #30363d;
+  cursor: pointer;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
 }
 
-.post-it-fab__secondary:hover {
+.post-it-fab__tray:hover {
   background: #30363d;
+}
+
+.post-it-fab__tray-svg {
+  display: block;
+}
+
+.post-it-fab__badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.28rem;
+  border-radius: 999px;
+  background: #da3633;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1.15rem;
+  text-align: center;
+}
+
+.post-it-tray {
+  pointer-events: auto;
+  width: min(20rem, calc(100vw - 2.5rem));
+  max-height: min(50vh, 20rem);
+  display: flex;
+  flex-direction: column;
+  background: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.post-it-tray__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid #30363d;
+  flex-shrink: 0;
+}
+
+.post-it-tray__count {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #e6edf3;
+}
+
+.post-it-tray__link {
+  border: none;
+  background: none;
+  color: #58a6ff;
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 0.2rem 0;
+}
+
+.post-it-tray__link:hover {
+  text-decoration: underline;
+}
+
+.post-it-tray__list {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.post-it-tray__item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  border-bottom: 1px solid #30363d;
+}
+
+.post-it-tray__item:last-child {
+  border-bottom: none;
+}
+
+.post-it-tray__snippet {
+  font-size: 0.78rem;
+  color: #c9d1d9;
+  line-height: 1.35;
+  word-break: break-word;
+  flex: 1;
+  min-width: 0;
+}
+
+.post-it-tray__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.post-it-tray__btn {
+  border: none;
+  border-radius: 4px;
+  padding: 0.2rem 0.45rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #30363d;
+  color: #e6edf3;
+}
+
+.post-it-tray__btn:hover {
+  background: #484f58;
+}
+
+.post-it-tray__btn--danger {
+  background: transparent;
+  color: #f85149;
+}
+
+.post-it-tray__btn--danger:hover {
+  background: rgba(248, 81, 73, 0.12);
 }

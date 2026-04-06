@@ -3,15 +3,16 @@ import type { PostItNote } from './types';
 
 const MIN_W = 160;
 const MIN_H_EXPANDED = 120;
-const FOLDED_H = 44;
 
 type Props = {
   note: PostItNote;
   onChange: (patch: Partial<PostItNote>) => void;
   onFocusNote: () => void;
+  onDelete: () => void;
+  onArchive: () => void;
 };
 
-export function PostIt({ note, onChange, onFocusNote }: Props) {
+export function PostIt({ note, onChange, onFocusNote, onDelete, onArchive }: Props) {
   const dragRef = useRef<{
     type: 'move' | 'resize';
     sx: number;
@@ -50,17 +51,13 @@ export function PostIt({ note, onChange, onFocusNote }: Props) {
         });
       } else {
         const w = Math.max(MIN_W, d.ow + (e.clientX - d.sx));
-        if (note.folded) {
-          onChange({ width: w, height: FOLDED_H });
-        } else {
-          const h = Math.max(MIN_H_EXPANDED, d.oh + (e.clientY - d.sy));
-          onChange({ width: w, height: h });
-        }
+        const h = Math.max(MIN_H_EXPANDED, d.oh + (e.clientY - d.sy));
+        onChange({ width: w, height: h });
       }
     };
     window.addEventListener('pointermove', onMove);
     return () => window.removeEventListener('pointermove', onMove);
-  }, [note.folded, onChange]);
+  }, [onChange]);
 
   const onHeaderPointerDown = (e: React.PointerEvent) => {
     if ((e.target as HTMLElement).closest('button')) return;
@@ -95,18 +92,6 @@ export function PostIt({ note, onChange, onFocusNote }: Props) {
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
   };
 
-  const toggleFold = () => {
-    onFocusNote();
-    if (note.folded) {
-      const h = note.expandedHeight ?? Math.max(note.height, MIN_H_EXPANDED);
-      onChange({ folded: false, height: h });
-    } else {
-      onChange({ folded: true, expandedHeight: note.height, height: FOLDED_H });
-    }
-  };
-
-  const h = note.folded ? FOLDED_H : note.height;
-
   return (
     <article
       className="post-it"
@@ -114,7 +99,7 @@ export function PostIt({ note, onChange, onFocusNote }: Props) {
         left: note.x,
         top: note.y,
         width: note.width,
-        height: h,
+        height: note.height,
         zIndex: note.z,
       }}
       onPointerDown={() => onFocusNote()}
@@ -124,37 +109,55 @@ export function PostIt({ note, onChange, onFocusNote }: Props) {
         onPointerDown={onHeaderPointerDown}
         style={{ cursor: moving ? 'grabbing' : 'grab' }}
       >
-        <span className="post-it__head-title">{preview(note.text)}</span>
+        <span className="post-it__head-drag" aria-hidden />
         <div className="post-it__head-actions">
-          <button type="button" className="post-it__icon-btn post-it__fold" onClick={toggleFold} title={note.folded ? '펼치기' : '접기'}>
-            {note.folded ? '펼' : '접'}
+          <button type="button" className="post-it__icon-btn" onClick={onArchive} title="보관으로 보내기" aria-label="보관으로 보내기">
+            <IconMinus />
+          </button>
+          <button type="button" className="post-it__icon-btn" onClick={onDelete} title="삭제" aria-label="삭제">
+            <IconTrash />
           </button>
         </div>
       </header>
-      {!note.folded && (
-        <div className="post-it__body">
-          <textarea
-            className="post-it__textarea"
-            value={note.text}
-            onChange={(e) => onChange({ text: e.target.value })}
-            onPointerDown={(e) => e.stopPropagation()}
-            placeholder="메모…"
-            spellCheck={false}
-          />
-        </div>
-      )}
+      <div className="post-it__body">
+        <textarea
+          className="post-it__textarea"
+          value={note.text}
+          onChange={(e) => onChange({ text: e.target.value })}
+          onPointerDown={(e) => e.stopPropagation()}
+          placeholder="메모…"
+          spellCheck={false}
+        />
+      </div>
       <button
         type="button"
         className="post-it__resize"
-        aria-label={note.folded ? '가로 크기 조절' : '크기 조절'}
+        aria-label="크기 조절"
         onPointerDown={onResizePointerDown}
-        style={{ cursor: note.folded ? 'ew-resize' : 'nwse-resize' }}
       />
     </article>
   );
 }
 
-function preview(text: string) {
-  const t = text.trim().split('\n')[0] || '포스트잇';
-  return t.length > 18 ? `${t.slice(0, 18)}…` : t;
+function IconMinus() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
+      <line x1="2" y1="7" x2="12" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconTrash() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+      <path
+        d="M3 4h8l-.7 7.1a1 1 0 0 1-1 .9H4.7a1 1 0 0 1-1-.9L3 4Z"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinejoin="round"
+      />
+      <path d="M5.5 4V2.5h3V4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M2 4h10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
 }
