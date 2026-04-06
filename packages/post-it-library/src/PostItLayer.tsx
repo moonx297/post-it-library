@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { PostIt } from './PostIt';
-import { loadNotes, saveNotes } from './storage';
+import { DEFAULT_STORAGE_KEY, loadNotes, saveNotes } from './storage';
 import type { PostItNote } from './types';
 
 let zSeed = 1;
@@ -30,16 +30,27 @@ function createNote(): PostItNote {
   };
 }
 
-export function PostItLayer() {
+export type PostItLayerProps = {
+  /** localStorage 키 (앱마다 다르게 두면 데이터가 분리됩니다) */
+  storageKey?: string;
+};
+
+export function PostItLayer({ storageKey = DEFAULT_STORAGE_KEY }: PostItLayerProps) {
   const [notes, setNotes] = useState<PostItNote[]>(() => {
-    const raw = loadNotes() ?? [];
+    const raw = loadNotes(storageKey) ?? [];
     syncZFromNotes(raw);
     return raw;
   });
 
   useEffect(() => {
-    saveNotes(notes);
-  }, [notes]);
+    const raw = loadNotes(storageKey) ?? [];
+    syncZFromNotes(raw);
+    setNotes(raw);
+  }, [storageKey]);
+
+  useEffect(() => {
+    saveNotes(notes, storageKey);
+  }, [notes, storageKey]);
 
   const foldedCount = useMemo(() => notes.filter((n) => n.folded).length, [notes]);
 

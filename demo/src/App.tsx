@@ -1,12 +1,12 @@
 import { Link, NavLink, Outlet, Route, Routes } from 'react-router-dom';
-import { PostItLayer } from './PostItLayer';
+import { PostItLayer } from 'post-it-library';
 import './app.css';
 
 function Shell() {
   return (
     <div className="shell">
       <nav className="shell__nav">
-        <span className="shell__brand">포스트잇 노트</span>
+        <span className="shell__brand">포스트잇 라이브러리 데모</span>
         <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')} end>
           홈
         </NavLink>
@@ -30,11 +30,24 @@ function Home() {
     <div className="page">
       <h1>홈</h1>
       <p>
-        위 메뉴로 이동해도 포스트잇은 그대로입니다. 내용은 브라우저 <code>localStorage</code>에 저장됩니다.
+        다른 프로젝트에서는 <code>npm i post-it-library</code> 후 아래처럼 쓰면 됩니다. 스타일은{' '}
+        <code>post-it-library/style.css</code> 를 한 번 import 하세요.
       </p>
+      <pre className="page__code">
+        {`import { PostItLayer } from 'post-it-library';
+import 'post-it-library/style.css';
+
+export function App() {
+  return (
+    <>
+      <YourRoutes />
+      <PostItLayer storageKey="my-app-notes" />
+    </>
+  );
+}`}
+      </pre>
       <p>
-        우측 하단 <strong>+</strong>로 추가, 헤더의 <strong>접기</strong>로 접으면 <strong>보관</strong> 버튼이 나타나며 한 번에
-        펼칠 수 있습니다. 오른쪽 아래 모서리를 드래그해 크기를 조절하세요.
+        위 메뉴로 이동해도 포스트잇은 그대로입니다. 내용은 브라우저 <code>localStorage</code>에 저장됩니다.
       </p>
     </div>
   );
