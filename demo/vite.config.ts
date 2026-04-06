@@ -8,6 +8,10 @@ const libRoot = path.resolve(dir, '../packages/post-it-library');
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    port: 5188,
+    strictPort: true,
+  },
   resolve: {
     alias: [
       { find: 'post-it-library/style.css', replacement: path.join(libRoot, 'src/style.css') },
